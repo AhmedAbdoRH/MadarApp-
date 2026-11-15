@@ -1,0 +1,170 @@
+{
+  "entities": {
+    "Specialist": {
+      "title": "Specialist",
+      "description": "Verified volunteer mental health specialist profile",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the volunteer psychologist" },
+        "name": { "type": "string", "description": "Full name of the specialist" },
+        "title": { "type": "string", "description": "Professional title and specialty" },
+        "bio": { "type": "string", "description": "Biography and counseling philosophy" },
+        "isOnline": { "type": "boolean", "description": "Whether the specialist is currently online and available for instant chats" },
+        "isVerified": { "type": "boolean", "description": "Whether the specialist has been verified by a supervisor" },
+        "isSuspended": { "type": "boolean", "description": "Whether the specialist is temporarily suspended by a supervisor" },
+        "qualificationTitle": { "type": "string", "description": "Approved academic or professional qualification summary" },
+        "applicationId": { "type": "string", "description": "Associated specialist application ID" },
+        "rating": { "type": "number", "description": "Average gratitude rating out of 5.0" },
+        "completedChats": { "type": "integer", "description": "Total completed support sessions" },
+        "experienceYears": { "type": "integer", "description": "Years of clinical / counseling experience" },
+        "tags": { "type": "array", "description": "Specialty tags like anxiety, grief, CBT" },
+        "avatarInitials": { "type": "string", "description": "Short initials for avatar" },
+        "avatarBgHex": { "type": "integer", "description": "Color hex for avatar background" },
+        "supportsUrgentCare": { "type": "boolean", "description": "Whether specialist handles urgent panic/crisis calls" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Timestamp when profile or online status was updated" }
+      },
+      "required": ["userId", "name", "title", "isOnline"]
+    },
+    "SpecialistApplication": {
+      "title": "SpecialistApplication",
+      "description": "Volunteer specialist onboarding application with attached qualification document for supervisor review",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Applicant Firebase UID" },
+        "applicantEmail": { "type": "string", "description": "Applicant email address" },
+        "fullName": { "type": "string", "description": "Applicant full name" },
+        "professionalTitle": { "type": "string", "description": "Clinical/counseling title" },
+        "specialtyTags": { "type": "array", "description": "Chosen counseling specialty tags" },
+        "experienceYears": { "type": "integer", "description": "Years of professional experience" },
+        "bio": { "type": "string", "description": "Professional summary and approach" },
+        "supportsUrgentCare": { "type": "boolean", "description": "Willingness to handle urgent requests" },
+        "qualificationTitle": { "type": "string", "description": "Degree or license title" },
+        "qualificationInstitution": { "type": "string", "description": "Issuing university or authority" },
+        "attachmentFileName": { "type": "string", "description": "Attached certificate file name" },
+        "attachmentMimeType": { "type": "string", "description": "MIME type of attached certificate (image/* or application/pdf)" },
+        "attachmentSizeBytes": { "type": "integer", "description": "Original attachment size in bytes" },
+        "attachmentBase64": { "type": "string", "description": "Base64 encoded qualification preview or PDF bytes" },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED", "SUSPENDED"], "description": "Review status" },
+        "reviewerId": { "type": "string", "description": "UID of reviewing supervisor" },
+        "reviewerEmail": { "type": "string", "description": "Email of reviewing supervisor" },
+        "reviewerNote": { "type": "string", "description": "Optional note from supervisor" },
+        "rejectionReason": { "type": "string", "description": "Reason provided when rejected" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Submission timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" },
+        "reviewedAt": { "type": "string", "format": "date-time", "description": "Supervisor review timestamp" }
+      },
+      "required": ["userId", "fullName", "professionalTitle", "qualificationTitle", "attachmentFileName", "attachmentMimeType", "attachmentBase64", "status", "createdAt"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Supervisor authorization record",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "description": "Supervisor email" },
+        "role": { "type": "string", "description": "Supervisor role identifier" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["role"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Chat session between a seeker and a volunteer specialist",
+      "type": "object",
+      "properties": {
+        "specialistId": { "type": "string", "description": "Specialist user ID or profile ID" },
+        "specialistName": { "type": "string", "description": "Specialist display name" },
+        "specialistTitle": { "type": "string", "description": "Specialist title" },
+        "seekerId": { "type": "string", "description": "Seeker user ID" },
+        "seekerName": { "type": "string", "description": "Seeker display name or anonymous moniker" },
+        "topic": { "type": "string", "description": "Venting or consultation topic" },
+        "status": { "type": "string", "description": "ACTIVE or RESOLVED", "enum": ["ACTIVE", "RESOLVED"] },
+        "acceptedBySpecialist": { "type": "boolean", "description": "Whether the specialist has accepted the incoming request" },
+        "lastMessage": { "type": "string", "description": "Snippet of latest message" },
+        "lastMessageTime": { "type": "string", "format": "date-time", "description": "Timestamp of latest message" },
+        "isUrgent": { "type": "boolean", "description": "Flag for urgent psychological first aid" },
+        "unreadCount": { "type": "integer", "description": "Unread message counter" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Update timestamp" }
+      },
+      "required": ["specialistId", "seekerId", "topic", "status", "createdAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "An individual chat message in a conversation",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string", "description": "ID of parent conversation" },
+        "senderId": { "type": "string", "description": "UID of sender" },
+        "senderName": { "type": "string", "description": "Display name of sender" },
+        "receiverId": { "type": "string", "description": "UID of intended recipient" },
+        "text": { "type": "string", "description": "Text message content" },
+        "isFromSpecialist": { "type": "boolean", "description": "True if sent by psychologist" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp of message" }
+      },
+      "required": ["conversationId", "senderId", "receiverId", "text", "isFromSpecialist", "createdAt"]
+    },
+    "BookingSlot": {
+      "title": "BookingSlot",
+      "description": "Scheduled counseling appointment slot",
+      "type": "object",
+      "properties": {
+        "specialistId": { "type": "string", "description": "Specialist UID" },
+        "specialistName": { "type": "string", "description": "Specialist display name" },
+        "dateText": { "type": "string", "description": "Display day/date" },
+        "timeText": { "type": "string", "description": "Display time range" },
+        "specialtyTitle": { "type": "string", "description": "Session topic track" },
+        "isBooked": { "type": "boolean", "description": "Booking state" },
+        "bookedById": { "type": "string", "description": "Seeker UID who booked slot" },
+        "bookedByName": { "type": "string", "description": "Seeker name" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Timestamp of booking update" }
+      },
+      "required": ["specialistId", "specialistName", "dateText", "timeText", "isBooked"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Safety report submitted by a user regarding a conversation or specialist",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string" },
+        "specialistId": { "type": "string" },
+        "userId": { "type": "string" },
+        "reason": { "type": "string" },
+        "details": { "type": "string" },
+        "status": { "type": "string", "enum": ["OPEN", "REVIEWED", "ACTION_TAKEN"] },
+        "reviewedNote": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["conversationId", "specialistId", "userId", "reason", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "Authorized platform supervisors"
+    },
+    "/specialist_applications/{applicantId}": {
+      "schema": { "$ref": "#/entities/SpecialistApplication" },
+      "description": "Specialist onboarding applications and qualification attachments pending supervisor review"
+    },
+    "/specialists/{specialistId}": {
+      "schema": { "$ref": "#/entities/Specialist" },
+      "description": "Profiles and live online availability of verified volunteer psychologists"
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "Conversations between seekers and specialists"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Chat messages within a specific conversation"
+    },
+    "/bookingSlots/{slotId}": {
+      "schema": { "$ref": "#/entities/BookingSlot" },
+      "description": "Scheduled appointment slots for structured sessions"
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/Report" },
+      "description": "Confidential safety reports reviewed by platform supervisors"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "كلم سند",
+  "description": "منصة شات تجمع بين أخصائيين نفسيين متطوعين وأشخاص محتاجين لدعم نفسي عاجل وفضفضة مجانية مع خيارات حجز جلسات وتمارين استرخاء.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
