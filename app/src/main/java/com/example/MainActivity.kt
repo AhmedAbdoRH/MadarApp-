@@ -533,6 +533,20 @@ fun SanadApp(viewModel: SanadViewModel) {
                     )
                 }
 
+                MainTab.ACCOUNT_SETTINGS -> {
+                    com.example.ui.screens.AccountSettingsScreen(
+                        canSwitchView = com.example.ui.logic.canSwitchSpecialistView(
+                            !currentUid.isNullOrBlank(), mySpecialistProfile?.isVerified == true,
+                            mySpecialistProfile?.isSuspended == true
+                        ),
+                        isSpecialistMode = isSpecialistMode,
+                        onSwitchView = {
+                            viewModel.switchAccountView(if (isSpecialistMode) UserRole.SEEKER else UserRole.SPECIALIST)
+                        },
+                        modifier = contentModifier
+                    )
+                }
+
                 MainTab.WELLBEING -> {
                     WellbeingScreen(
                         moodHistory = moodHistory,
@@ -587,7 +601,7 @@ fun SanadApp(viewModel: SanadViewModel) {
                             onSaveProfile = { title, bio, tags, years, urgent ->
                                 viewModel.updateMySpecialistProfile(title, bio, tags, years, urgent)
                             },
-                            onSwitchToSeeker = { viewModel.setRole(UserRole.SEEKER) },
+                            onSwitchToSeeker = { viewModel.selectTab(MainTab.ACCOUNT_SETTINGS) },
                             modifier = contentModifier
                         )
                     }
@@ -656,14 +670,16 @@ fun SanadBottomBar(
                 NavigationItem(MainTab.HOME, "الرئيسية", Icons.Filled.Home, Icons.Outlined.Home),
                 NavigationItem(MainTab.CHATS, "محادثاتي", Icons.AutoMirrored.Filled.Chat, Icons.AutoMirrored.Outlined.Chat),
                 NavigationItem(MainTab.BOOKING, "حجز موعد", Icons.Filled.CalendarMonth, Icons.Outlined.CalendarMonth),
-                NavigationItem(MainTab.WELLBEING, "راحتك", Icons.Filled.SelfImprovement, Icons.Outlined.SelfImprovement)
+                NavigationItem(MainTab.WELLBEING, "راحتك", Icons.Filled.SelfImprovement, Icons.Outlined.SelfImprovement),
+                NavigationItem(MainTab.ACCOUNT_SETTINGS, "حسابي", Icons.Filled.Person, Icons.Outlined.Person)
             )
 
             UserRole.SPECIALIST -> listOf(
                 NavigationItem(MainTab.SPECIALIST_DASHBOARD, "لوحتي", Icons.Filled.VolunteerActivism, Icons.Outlined.VolunteerActivism),
                 NavigationItem(MainTab.CHATS, "المحادثات", Icons.AutoMirrored.Filled.Chat, Icons.AutoMirrored.Outlined.Chat),
                 NavigationItem(MainTab.SPECIALIST_SCHEDULE, "مواعيدي", Icons.Filled.CalendarMonth, Icons.Outlined.CalendarMonth),
-                NavigationItem(MainTab.SPECIALIST_PROFILE, "ملفي", Icons.Filled.Person, Icons.Outlined.Person)
+                NavigationItem(MainTab.SPECIALIST_PROFILE, "ملفي", Icons.Filled.Person, Icons.Outlined.Person),
+                NavigationItem(MainTab.ACCOUNT_SETTINGS, "حسابي", Icons.Filled.Person, Icons.Outlined.Person)
             )
 
             UserRole.SUPERVISOR -> listOf(
