@@ -382,30 +382,6 @@ fun RoleSwitchBar(
 
                 // Role toggle & Single Urgent Help button
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Role Toggle Pill
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(SanadTheme.colors.surface)
-                            .border(1.dp, SanadTheme.colors.divider, RoundedCornerShape(20.dp))
-                            .clickable {
-                                val newRole = if (currentRole == UserRole.SEEKER) UserRole.SPECIALIST else UserRole.SEEKER
-                                onRoleChange(newRole)
-                            }
-                            .padding(horizontal = 10.dp, vertical = 6.dp)
-                            .testTag("role_toggle_button"),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = if (currentRole == UserRole.SEEKER) "مستفيد 👤" else "أخصائي متطوع 🩺",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = SanadTheme.colors.text
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
                     // Urgent Help Header Button (Single button, no red phone)
                     com.example.ui.components.UrgentHelpHeaderButton(
                         onClick = onEmergencyClick
