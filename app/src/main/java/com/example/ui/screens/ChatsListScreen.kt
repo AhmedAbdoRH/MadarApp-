@@ -49,9 +49,13 @@ import androidx.compose.ui.unit.sp
 import com.example.data.model.Conversation
 import com.example.data.model.Specialist
 import com.example.ui.theme.SanadTheme
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.example.ui.logic.formatConversationTimestamp
+import com.example.ui.logic.ticketLifecycleLabel
+import com.example.ui.logic.UNKNOWN_READ_STATE
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.getValue
+import kotlinx.coroutines.delay
+import java.util.TimeZone
 
 @Composable
 fun ChatsListScreen(
@@ -67,7 +71,10 @@ fun ChatsListScreen(
     onToggleNotifications: (Boolean) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    val timeFormatter = remember { SimpleDateFormat("hh:mm a", Locale.forLanguageTag("ar")) }
+    // Re-evaluate relative labels while this screen stays open across midnight.
+    val nowMillis by produceState(System.currentTimeMillis()) {
+        while (true) { delay(30_000); value = System.currentTimeMillis() }
+    }
 
     Column(
         modifier = modifier
@@ -211,7 +218,10 @@ fun ChatsListScreen(
                         conversation = conv,
                         specialist = specialist,
                         isSpecialistMode = isSpecialistMode,
-                        formattedTime = timeFormatter.format(conv.lastMessageTime?.toDate() ?: Date()),
+                        formattedTime = formatConversationTimestamp(
+                            conv.lastMessageTime?.toDate()?.time ?: conv.createdAt?.toDate()?.time,
+                            nowMillis, TimeZone.getDefault()
+                        ),
                         onClick = { onSelectConversation(conv.id) }
                     )
                 }
@@ -297,31 +307,16 @@ fun ConversationItemCard(
                                 tint = SanadTheme.colors.accent,
                                 modifier = Modifier.size(14.dp)
                             )
-                        } else if (!conversation.acceptedBySpecialist && conversation.status == "ACTIVE") {
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Box(
-                                modifier = Modifier
-                                    .background(SanadTheme.colors.bg, RoundedCornerShape(6.dp))
-                                    .border(1.dp, SanadTheme.colors.accent, RoundedCornerShape(6.dp))
-                                    .padding(horizontal = 6.dp, vertical = 1.dp)
-                            ) {
-                                Text(
-                                    text = "جديد",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = SanadTheme.colors.accent,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
                         }
                     }
 
-                    Text(
-                        text = formattedTime,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = SanadTheme.colors.textSecondary
-                    )
+
                 }
 
+                Text(formattedTime, style = MaterialTheme.typography.labelSmall, color = SanadTheme.colors.textSecondary)
+                Text(ticketLifecycleLabel(conversation.status, conversation.acceptedBySpecialist),
+                    style = MaterialTheme.typography.labelSmall, color = SanadTheme.colors.accent)
+                Text(UNKNOWN_READ_STATE, style = MaterialTheme.typography.labelSmall, color = SanadTheme.colors.textSecondary)
                 Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
@@ -342,23 +337,7 @@ fun ConversationItemCard(
                 )
             }
 
-            if (conversation.unreadCount > 0) {
-                Spacer(modifier = Modifier.width(8.dp))
-                Box(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .background(SanadTheme.colors.accent, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "${conversation.unreadCount}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = SanadTheme.colors.onAccent,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
+
         }
     }
 }
