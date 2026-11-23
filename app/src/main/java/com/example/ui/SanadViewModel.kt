@@ -35,6 +35,7 @@ enum class MainTab {
     CHATS,
     BOOKING,
     WELLBEING,
+    ACCOUNT_SETTINGS,
     SPECIALIST_DASHBOARD,
     SPECIALIST_SCHEDULE,
     SPECIALIST_PROFILE,
@@ -475,6 +476,17 @@ class SanadViewModel(application: Application) : AndroidViewModel(application) {
         Firebase.auth.removeAuthStateListener(authStateListener)
         authStateJob?.cancel()
         messagesObservationJob?.cancel()
+    }
+
+    // View switching is not specialist registration and does not grant backend access.
+    fun switchAccountView(role: UserRole) {
+        val uid = Firebase.auth.currentUser?.uid
+        val profile = findOwnedSpecialist(_allSpecialistsRaw.value, uid)
+        val eligible = com.example.ui.logic.canSwitchSpecialistView(
+            !uid.isNullOrBlank(), profile?.isVerified == true, profile?.isSuspended == true
+        )
+        if (!eligible || role == UserRole.SUPERVISOR) return
+        setRole(role)
     }
 
     fun setRole(role: UserRole) {
@@ -1011,8 +1023,11 @@ class SanadViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 firestoreRepo.acceptSpecialistConversation(request.id)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
             } catch (_: Exception) {
-                // Handled gracefully
+                showSnackbar("تعذر قبول المحادثة. لم يتم فتحها، حاول مجدداً.")
+                return@launch
             }
             openConversation(request.id)
             showSnackbar("تم قبول المحادثة! أنت الآن متصل مع المستفيد.")
