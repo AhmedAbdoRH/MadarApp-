@@ -329,7 +329,7 @@ fun SpecialistProfileScreen(
                 ) {
                     Icon(Icons.Default.SwapHoriz, contentDescription = null, tint = SanadTheme.colors.text)
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("التبديل لوضع المستفيد", color = SanadTheme.colors.text)
+                    Text("إعدادات الحساب", color = SanadTheme.colors.text)
                 }
             }
         }
