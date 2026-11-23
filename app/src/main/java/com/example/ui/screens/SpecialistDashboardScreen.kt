@@ -127,29 +127,7 @@ fun SpecialistDashboardScreen(
                     }
                 }
 
-                OutlinedButton(
-                    onClick = onSwitchToSeeker,
-                    shape = RoundedCornerShape(20.dp),
-                    border = BorderStroke(1.dp, SanadTheme.colors.divider),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                    modifier = Modifier
-                        .heightIn(min = 48.dp)
-                        .testTag("specialist_switch_to_seeker_btn")
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.SwapHoriz,
-                        contentDescription = null,
-                        tint = SanadTheme.colors.text,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "وضع المستفيد",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = SanadTheme.colors.text,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
+
             }
         }
 
