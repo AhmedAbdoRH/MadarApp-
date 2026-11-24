@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -74,6 +75,7 @@ fun WelcomeConsentScreen(
 ) {
     // No option selected by default (بطاقتين Radio من غير أي خيار محدد مسبقاً)
     var selectedAgeOption by remember { mutableStateOf<AgeOption?>(null) }
+    var adultConsent by remember { mutableStateOf(false) }
 
     // Intercept back button to prevent skipping consent screen
     BackHandler(enabled = true) {
@@ -175,7 +177,7 @@ fun WelcomeConsentScreen(
             AgeSelectCard(
                 title = "عمري 18 سنة أو أكثر",
                 isSelected = selectedAgeOption == AgeOption.ADULT,
-                onClick = { selectedAgeOption = AgeOption.ADULT },
+                onClick = { selectedAgeOption = AgeOption.ADULT; adultConsent = false },
                 testTag = "age_card_adult"
             )
 
@@ -185,23 +187,35 @@ fun WelcomeConsentScreen(
             AgeSelectCard(
                 title = "عمري أقل من 18 سنة",
                 isSelected = selectedAgeOption == AgeOption.UNDER_18,
-                onClick = { selectedAgeOption = AgeOption.UNDER_18 },
+                onClick = { selectedAgeOption = AgeOption.UNDER_18; adultConsent = false },
                 testTag = "age_card_under_18"
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Small text above button: «الضغط على «موافق ونكمل» معناه الموافقة على اللي فوق.»
-            Text(
-                text = "الضغط على «موافق ونكمل» معناه الموافقة على اللي فوق.",
-                style = MaterialTheme.typography.bodySmall,
-                color = SanadTheme.colors.textSecondary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            // Primary Button «موافق ونكمل», disabled until user chooses
-            val isButtonEnabled = selectedAgeOption != null
+            if (selectedAgeOption == AgeOption.ADULT) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = adultConsent,
+                        onCheckedChange = { adultConsent = it },
+                        modifier = Modifier.testTag("adult_consent_checkbox")
+                    )
+                    Text(
+                        text = "فهمت حدود الدعم وأن سياسة الخصوصية لم تكتمل بعد، وأوافق على المتابعة.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = SanadTheme.colors.text,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            } else if (selectedAgeOption == AgeOption.UNDER_18) {
+                Text(
+                    text = "سنفتح موارد المساعدة المناسبة للسن، من غير الدخول لخدمة المحادثة.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = SanadTheme.colors.text
+                )
+            }
+            val isButtonEnabled = selectedAgeOption == AgeOption.UNDER_18 ||
+                (selectedAgeOption == AgeOption.ADULT && adultConsent)
             Button(
                 onClick = {
                     when (selectedAgeOption) {
@@ -224,7 +238,7 @@ fun WelcomeConsentScreen(
                 )
             ) {
                 Text(
-                    text = "موافق ونكمل",
+                    text = if (selectedAgeOption == AgeOption.UNDER_18) "عرض موارد المساعدة" else "موافق، متابعة",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -283,7 +297,7 @@ fun ConsentPrivacyRow(
     onPrivacyClick: () -> Unit
 ) {
     val privacyText = androidx.compose.ui.text.buildAnnotatedString {
-        append("بنحترم خصوصيتك، وتفاصيل التعامل مع البيانات في ")
+        append("سياسة الخصوصية لم تكتمل بعد. راجع الحالة الحالية في ")
         pushStringAnnotation(tag = "PRIVACY", annotation = "privacy")
         withStyle(
             style = androidx.compose.ui.text.SpanStyle(
