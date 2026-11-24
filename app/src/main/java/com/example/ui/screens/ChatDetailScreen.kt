@@ -652,7 +652,7 @@ private fun ChatContextPrivacyBanner(
     val accentColor = SanadTheme.colors.accent
     val privacyAnnotatedText = remember(accentColor) {
         buildAnnotatedString {
-            append("بنحترم خصوصيتك، وتفاصيل التعامل مع البيانات في ")
+            append("سياسة الخصوصية لم تكتمل بعد. راجع الحالة الحالية في ")
             withLink(
                 LinkAnnotation.Clickable(
                     tag = "privacy",
@@ -805,7 +805,7 @@ private fun ChatOpeningWelcomeCard(
                 text = when {
                     isSpecialistViewer -> "مساحة دعم جديدة حول: ${topic.ifBlank { "فضفضة عامة" }}"
                     !acceptedBySpecialist -> "تم فتح المحادثة مع $participantName"
-                    else -> "مساحتك الآمنة مع $participantName"
+                    else -> "محادثتك مع $participantName"
                 },
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
