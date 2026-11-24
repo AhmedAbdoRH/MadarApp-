@@ -60,6 +60,8 @@ data class SanadUiState(
     val selectedConversationId: String? = null,
     val isEmergencyDialogOpen: Boolean = false,
     val isBookingDialogOpen: Boolean = false,
+    val isBookingBusy: Boolean = false,
+    val bookingCancellationSlotId: String? = null,
     val selectedSlotForBooking: BookingSlot? = null,
     val isUrgentConnecting: Boolean = false,
     val activeVentingTopic: String? = null,
@@ -805,6 +807,7 @@ class SanadViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun closeBookingDialog() {
+        if (_uiState.value.isBookingBusy) return
         _uiState.value = _uiState.value.copy(
             isBookingDialogOpen = false,
             selectedSlotForBooking = null
@@ -812,35 +815,54 @@ class SanadViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun confirmBooking(seekerName: String = "مستفيد") {
+        if (_uiState.value.isBookingBusy) return
         val slot = _uiState.value.selectedSlotForBooking ?: return
-        SanadRepository.bookSlot(slot.id, seekerName)
-        _bookingSlots.value = SanadRepository.bookingSlots.value
-
+        _uiState.value = _uiState.value.copy(isBookingBusy = true)
         viewModelScope.launch {
             try {
                 firestoreRepo.bookSlot(slot.id, seekerName)
-            } catch (e: Exception) {
-                // Kept in local state
+                _uiState.value = _uiState.value.copy(
+                    isBookingDialogOpen = false,
+                    selectedSlotForBooking = null
+                )
+                showSnackbar("تم حجز الجلسة. موعدك: ${slot.dateText} (${slot.timeText})")
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                showSnackbar("لم يتأكد الحجز. تحقق من الاتصال وحالة الموعد قبل المحاولة مرة أخرى.")
+            } finally {
+                _uiState.value = _uiState.value.copy(isBookingBusy = false)
             }
         }
-
-        showSnackbar("تم حجز الجلسة بنجاح! موعدك: ${slot.dateText} (${slot.timeText}) 🌿")
-        closeBookingDialog()
     }
 
-    fun cancelBooking(slotId: String) {
-        SanadRepository.cancelBooking(slotId)
-        _bookingSlots.value = SanadRepository.bookingSlots.value
+    fun requestBookingCancellation(slotId: String) {
+        if (_uiState.value.isBookingBusy) return
+        _uiState.value = _uiState.value.copy(bookingCancellationSlotId = slotId)
+    }
 
+    fun dismissBookingCancellation() {
+        if (_uiState.value.isBookingBusy) return
+        _uiState.value = _uiState.value.copy(bookingCancellationSlotId = null)
+    }
+
+    fun confirmBookingCancellation() {
+        if (_uiState.value.isBookingBusy) return
+        val slotId = _uiState.value.bookingCancellationSlotId ?: return
+        _uiState.value = _uiState.value.copy(isBookingBusy = true)
         viewModelScope.launch {
             try {
                 firestoreRepo.cancelBooking(slotId)
-            } catch (e: Exception) {
-                // Kept in local state
+                _uiState.value = _uiState.value.copy(bookingCancellationSlotId = null)
+                showSnackbar("تم إلغاء موعد الجلسة.")
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                showSnackbar("لم يتأكد الإلغاء. تحقق من الاتصال وحالة الموعد قبل المحاولة مرة أخرى.")
+            } finally {
+                _uiState.value = _uiState.value.copy(isBookingBusy = false)
             }
         }
-
-        showSnackbar("تم إلغاء موعد الجلسة.")
     }
 
     fun setEmergencyDialogOpen(open: Boolean) {
