@@ -40,6 +40,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.SelfImprovement
 import androidx.compose.material.icons.outlined.VerifiedUser
 import androidx.compose.material.icons.outlined.VolunteerActivism
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -527,7 +528,7 @@ fun SanadApp(viewModel: SanadViewModel) {
                     SessionsBookingScreen(
                         slots = bookingSlots,
                         onOpenBookingDialog = { slot -> viewModel.openBookingDialog(slot) },
-                        onCancelBooking = { slotId -> viewModel.cancelBooking(slotId) },
+                        onCancelBooking = { slotId -> viewModel.requestBookingCancellation(slotId) },
                         onEmergencyClick = { viewModel.openUrgentScreen() },
                         modifier = contentModifier
                     )
@@ -588,7 +589,7 @@ fun SanadApp(viewModel: SanadViewModel) {
                             viewModel.createSpecialistBookingSlot(dateText, timeText, specialtyTitle)
                         },
                         onDeleteSlot = { slotId -> viewModel.deleteSpecialistBookingSlot(slotId) },
-                        onCancelBookedSlot = { slotId -> viewModel.cancelBooking(slotId) },
+                        onCancelBookedSlot = { slotId -> viewModel.requestBookingCancellation(slotId) },
                         modifier = contentModifier
                     )
                 }
@@ -627,10 +628,35 @@ fun SanadApp(viewModel: SanadViewModel) {
             )
         }
 
+        if (uiState.bookingCancellationSlotId != null) {
+            val slot = bookingSlots.firstOrNull { it.id == uiState.bookingCancellationSlotId }
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissBookingCancellation() },
+                title = { Text("إلغاء حجز الجلسة؟") },
+                text = {
+                    Text(if (slot == null) "هل تريد إلغاء هذا الحجز؟" else
+                        "${slot.specialistName}\n${slot.dateText} | ${slot.timeText}\nلن يتم الإلغاء إلا بعد تأكيد الخادم.")
+                },
+                confirmButton = {
+                    TextButton(
+                        enabled = !uiState.isBookingBusy,
+                        onClick = { viewModel.confirmBookingCancellation() }
+                    ) { Text(if (uiState.isBookingBusy) "جارٍ الإلغاء..." else "نعم، ألغِ الحجز") }
+                },
+                dismissButton = {
+                    TextButton(
+                        enabled = !uiState.isBookingBusy,
+                        onClick = { viewModel.dismissBookingCancellation() }
+                    ) { Text("احتفظ بالحجز") }
+                }
+            )
+        }
+
         // Booking confirmation dialog
         if (uiState.isBookingDialogOpen && uiState.selectedSlotForBooking != null) {
             BookingConfirmDialog(
                 slot = uiState.selectedSlotForBooking!!,
+                isSubmitting = uiState.isBookingBusy,
                 onConfirm = { seekerName -> viewModel.confirmBooking(seekerName) },
                 onDismiss = { viewModel.closeBookingDialog() }
             )
