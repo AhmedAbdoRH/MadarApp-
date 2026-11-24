@@ -1,6 +1,8 @@
 package com.example.ui.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -70,6 +72,7 @@ fun PrivacyPolicyScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -80,10 +83,21 @@ fun PrivacyPolicyScreen(
                 color = SanadTheme.colors.text
             )
             Text(
-                text = "الصفحة دي قيد الإعداد والمراجعة القانونية.",
+                text = "السياسة غير مكتملة، وليست سياسة خصوصية نهائية. لا تعتبر استخدام التطبيق ضماناً للسرية المطلقة.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = SanadTheme.colors.textSecondary,
                 lineHeight = 24.sp
+            )
+            Text(
+                text = "قبل مشاركة معلومات حساسة",
+                style = MaterialTheme.typography.titleMedium,
+                color = SanadTheme.colors.text
+            )
+            Text(
+                text = "لم تُنشر بعد تفاصيل الجهة المسؤولة ووسيلة التواصل، ومن يمكنه الاطلاع على البيانات، ومدة الاحتفاظ بها وطريقة طلب حذفها، وحدود السرية. تجنب مشاركة بيانات تعريفية أو معلومات حساسة لا تحتاجها المحادثة إلى أن تتضح هذه التفاصيل.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = SanadTheme.colors.text,
+                lineHeight = 26.sp
             )
         }
     }
