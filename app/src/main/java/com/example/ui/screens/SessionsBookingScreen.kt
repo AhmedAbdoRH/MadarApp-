@@ -123,7 +123,7 @@ fun SessionsBookingScreen(
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "الخدمة الأساسية في «كلم سند» هي الشات الفوري المجاني، وهذه الجلسات المجدولة مخصصة لمن يرغب في متابعة منتظمة ومحددة مسبقاً.",
+                    text = "الخدمة الأساسية في «كلم سند» هي المحادثة المجانية حسب توافر المتطوعين، وهذه الجلسات المجدولة مخصصة لمن يرغب في متابعة منتظمة ومحددة مسبقاً.",
                     style = MaterialTheme.typography.bodySmall,
                     color = SanadTheme.colors.textSecondary,
                     lineHeight = 18.sp
