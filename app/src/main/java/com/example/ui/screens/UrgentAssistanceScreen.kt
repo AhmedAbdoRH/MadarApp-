@@ -158,9 +158,9 @@ fun UrgentAssistanceScreen(
             // Card 2: لازم أتكلم مع حد حالًا
             UrgentActionCard(
                 title = "لازم أتكلم مع حد حالًا",
-                subtitle = "بدء شات فوري وسري مع أخصائي نفسي متطوع متاح أونلاين الآن",
+                subtitle = "طلب محادثة مع أخصائي متطوع. الرد حسب التوافر، وسياسة الخصوصية غير مكتملة.",
                 icon = Icons.Default.Forum,
-                buttonText = "بدء شات فوري عاجل",
+                buttonText = "طلب دعم من متطوع",
                 onClick = {
                     if (hasAvailableSpecialists) {
                         onStartUrgentChat()
