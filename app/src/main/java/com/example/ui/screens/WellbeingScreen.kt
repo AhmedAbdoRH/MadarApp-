@@ -68,7 +68,7 @@ fun WellbeingScreen(
     modifier: Modifier = Modifier
 ) {
     // Mood selection state
-    var selectedScore by remember { mutableIntStateOf(3) }
+    var selectedScore by remember { mutableStateOf<Int?>(null) }
     var moodNote by remember { mutableStateOf("") }
 
     val moodOptions = listOf(
@@ -264,10 +264,14 @@ fun WellbeingScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Button(
+                        enabled = selectedScore != null,
                         onClick = {
-                            val option = moodOptions.find { it.first == selectedScore } ?: moodOptions[2]
-                            onLogMood(selectedScore, option.second, option.third, moodNote)
-                            moodNote = ""
+                            val option = moodOptions.find { it.first == selectedScore }
+                            if (option != null) {
+                                onLogMood(option.first, option.second, option.third, moodNote)
+                                moodNote = ""
+                                selectedScore = null
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -279,7 +283,7 @@ fun WellbeingScreen(
                         )
                     ) {
                         Text(
-                            text = "حفظ حالتي المزاجية 🌿",
+                            text = if (selectedScore == null) "اختر شعورك أولاً" else "حفظ حالتي المزاجية 🌿",
                             fontWeight = FontWeight.Bold,
                             color = SanadTheme.colors.onAccent
                         )
