@@ -50,12 +50,12 @@ import com.example.ui.theme.SanadTheme
 fun BookingConfirmDialog(
     slot: BookingSlot,
     onConfirm: (String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    isSubmitting: Boolean = false
 ) {
     var nameInput by remember { mutableStateOf("") }
-    var notesInput by remember { mutableStateOf("") }
 
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = { if (!isSubmitting) onDismiss() }) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -75,7 +75,7 @@ fun BookingConfirmDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
@@ -97,7 +97,7 @@ fun BookingConfirmDialog(
                             color = SanadTheme.colors.text
                         )
                     }
-                    IconButton(onClick = onDismiss) {
+                    IconButton(onClick = onDismiss, enabled = !isSubmitting) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "إغلاق",
@@ -154,6 +154,7 @@ fun BookingConfirmDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
+                    enabled = !isSubmitting,
                     value = nameInput,
                     onValueChange = { nameInput = it },
                     label = { Text("اسمك أو اسم مستعار (اختياري للخصوصية)") },
@@ -180,38 +181,13 @@ fun BookingConfirmDialog(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                OutlinedTextField(
-                    value = notesInput,
-                    onValueChange = { notesInput = it },
-                    label = { Text("ملاحظة مختصرة للأخصائي (اختياري)") },
-                    placeholder = {
-                        Text(
-                            text = "مثال: أعاني من أرق متكرر وضغوط عمل...",
-                            color = SanadTheme.colors.textSecondary
-                        )
-                    },
-                    maxLines = 3,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = SanadTheme.colors.text,
-                        unfocusedTextColor = SanadTheme.colors.text,
-                        focusedLabelColor = SanadTheme.colors.accent,
-                        unfocusedLabelColor = SanadTheme.colors.textSecondary,
-                        focusedBorderColor = SanadTheme.colors.accent,
-                        unfocusedBorderColor = SanadTheme.colors.borderInput,
-                        cursorColor = SanadTheme.colors.accent
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("booking_note_input")
-                )
-
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    TextButton(onClick = onDismiss) {
+                    TextButton(onClick = onDismiss, enabled = !isSubmitting) {
                         Text(
                             text = "إلغاء",
                             color = SanadTheme.colors.textSecondary
@@ -219,6 +195,7 @@ fun BookingConfirmDialog(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
+                        enabled = !isSubmitting,
                         onClick = {
                             val finalName = if (nameInput.isNotBlank()) nameInput.trim() else "مستفيد"
                             onConfirm(finalName)
@@ -231,7 +208,7 @@ fun BookingConfirmDialog(
                         modifier = Modifier.testTag("confirm_booking_button")
                     ) {
                         Text(
-                            text = "تأكيد الحجز مجاناً",
+                            text = if (isSubmitting) "جارٍ تأكيد الحجز..." else "تأكيد الحجز مجاناً",
                             fontWeight = FontWeight.Bold,
                             color = SanadTheme.colors.onAccent
                         )
