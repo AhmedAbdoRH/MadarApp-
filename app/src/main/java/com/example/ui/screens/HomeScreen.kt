@@ -129,7 +129,7 @@ fun HomeScreen(
         item {
             SectionHeader(
                 title = "عن ماذا تريد الفضفضة اليوم؟",
-                subtitle = "اختر ما يقلقك لربطك بالمتطوع الأنسب فوراً"
+                subtitle = "أو اختر موضوعاً لطلب محادثة. الرد حسب توافر المتطوعين."
             )
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp),
@@ -438,7 +438,7 @@ fun HeroBanner(
         Box(modifier = Modifier.fillMaxWidth()) {
             Image(
                 painter = painterResource(id = R.drawable.sanad_hero_1794126502005),
-                contentDescription = "مساحة استماع آمنة",
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -497,7 +497,7 @@ fun HeroBanner(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "شات مجاني فوري يربطك بمتخصصين نفسيين متطوعين بدون أحكام.",
+                    text = "ابدأ بطلب دعم، أو اختر موضوعاً أو أخصائياً من القائمة. الرد حسب التوافر.",
                     style = MaterialTheme.typography.bodySmall,
                     color = SanadTheme.colors.textSecondary,
                     lineHeight = 18.sp
@@ -522,15 +522,12 @@ fun UrgentHelpCta(
         colors = CardDefaults.cardColors(containerColor = SanadTheme.colors.surface),
         border = BorderStroke(1.dp, SanadTheme.colors.danger)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
@@ -557,13 +554,13 @@ fun UrgentHelpCta(
                 Spacer(modifier = Modifier.width(14.dp))
                 Column {
                     Text(
-                        text = if (isConnecting) "جارٍ ربطك بمتطوع متاح..." else "دعم نفسي عاجل وطارئ 🚨",
+                        text = if (isConnecting) "جارٍ ربطك بمتطوع متاح..." else "طلب دعم نفسي",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = SanadTheme.colors.danger
                     )
                     Text(
-                        text = if (isConnecting) "لحظات ونبدأ الشات..." else "نوبة قلق؟ ضيق مفاجئ؟ تحدث فوراً مجاناً",
+                        text = if (isConnecting) "مدة الانتظار حسب توافر المتطوعين." else "نبحث عن متطوع للرد. الخدمة ليست بديلاً للطوارئ.",
                         style = MaterialTheme.typography.bodySmall,
                         color = SanadTheme.colors.textSecondary
                     )
@@ -578,10 +575,10 @@ fun UrgentHelpCta(
                     contentColor = SanadTheme.colors.onAccent
                 ),
                 shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.testTag("urgent_chat_now_button")
+                modifier = Modifier.fillMaxWidth().testTag("urgent_chat_now_button")
             ) {
                 Text(
-                    text = "ابدأ فوراً",
+                    text = "اطلب الدعم",
                     fontWeight = FontWeight.Bold,
                     color = SanadTheme.colors.onAccent
                 )
@@ -794,7 +791,7 @@ fun SpecialistCard(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = if (specialist.isOnline) "شات فوري مجاني" else "إرسال رسالة",
+                        text = if (specialist.isOnline) "طلب محادثة مجانية" else "إرسال رسالة",
                         color = SanadTheme.colors.onAccent,
                         fontWeight = FontWeight.Bold
                     )
