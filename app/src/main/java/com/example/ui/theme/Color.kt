@@ -34,9 +34,9 @@ val DarkSanadColors = SanadColors(
     accentStrong = Color(0xFFE07A5F),
     onAccent = Color(0xFF0A1F2E),
     bubbleUser = Color(0xFF1B4F72),
-    online = Color(0xFF3FA37A),
+    online = Color(0xFF48AF85),
     busy = Color(0xFFD9A441),
-    danger = Color(0xFFE26D6D)
+    danger = Color(0xFFEB7979)
 )
 
 // Light Theme (Defined for future use, not default)
