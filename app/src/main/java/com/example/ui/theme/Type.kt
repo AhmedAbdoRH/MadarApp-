@@ -67,8 +67,8 @@ val SanadTypography = Typography(
     bodySmall = TextStyle(
         fontFamily = TajawalFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
         letterSpacing = 0.4.sp
     ),
     labelLarge = TextStyle(
@@ -78,11 +78,18 @@ val SanadTypography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
+    labelSmall = TextStyle(
+        fontFamily = TajawalFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 13.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.sp
+    ),
     labelMedium = TextStyle(
         fontFamily = TajawalFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
         letterSpacing = 0.5.sp
     )
 )
