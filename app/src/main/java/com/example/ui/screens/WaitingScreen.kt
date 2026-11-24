@@ -188,7 +188,7 @@ fun WaitingScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "ممكن ياخد لحظات.",
+                    text = "مدة الانتظار غير محددة وتعتمد على توافر المتطوعين.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = SanadTheme.colors.textSecondary,
                     textAlign = TextAlign.Center
